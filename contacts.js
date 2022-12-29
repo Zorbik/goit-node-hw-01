@@ -15,11 +15,7 @@ export async function listContacts() {
 export async function getContactById(contactId) {
   try {
     const contacts = await listContacts();
-    const contactById = contacts.find(
-      (contact) => contact.id === String(contactId)
-    );
-
-    return contactById;
+    return contacts.find((contact) => contact.id === String(contactId));
   } catch (error) {
     console.error("error", error);
   }
@@ -28,17 +24,14 @@ export async function getContactById(contactId) {
 export async function removeContact(contactId) {
   try {
     const contacts = await listContacts();
-    const deletedContact = await getContactById(contactId);
-    let newContactList;
-    if (deletedContact) {
-      newContactList = contacts.filter(
-        (contact) => contact.id !== String(contactId)
-      );
-    } else return "Contact is not found";
+    const index = contacts.findIndex(
+      (contact) => contact.id === String(contactId)
+    );
+    contacts.splice(index, 1);
 
-    await writeFile(contactsPath, JSON.stringify(newContactList), "utf8");
+    await writeFile(contactsPath, JSON.stringify(contacts), "utf8");
 
-    return deletedContact;
+    return contactId;
   } catch (error) {
     console.error("error", error);
   }
